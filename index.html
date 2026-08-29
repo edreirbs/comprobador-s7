@@ -1,0 +1,372 @@
+<title>¿Ya quedó tu base?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+  :root{
+    --ground:#F5F7F9; --surface:#FFFFFF; --surface-2:#EDF1F4;
+    --ink:#161C26; --ink-2:#4A5563; --ink-3:#77828F;
+    --line:#DCE3E9; --line-2:#C3CDD6;
+    --brand:#00685E; --brand-ink:#00534B;
+    --ok:#1B6B47; --ok-bg:#E7F2EC;
+    --warn:#8A5A00; --warn-bg:#FBF1DE;
+    --bad:#8A1538; --bad-bg:#F8E8EC;
+    --shadow:0 1px 2px rgba(22,28,38,.05), 0 8px 24px -12px rgba(22,28,38,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#10151D; --surface:#181F29; --surface-2:#212A36;
+      --ink:#E9EEF4; --ink-2:#AAB6C2; --ink-3:#7C8894;
+      --line:#2A3441; --line-2:#3A4653;
+      --brand:#4FB3A1; --brand-ink:#6FC9B8;
+      --ok:#6DD09A; --ok-bg:#12281E;
+      --warn:#E0AC5B; --warn-bg:#2B2113;
+      --bad:#E8879F; --bad-bg:#2B1219;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#10151D; --surface:#181F29; --surface-2:#212A36;
+    --ink:#E9EEF4; --ink-2:#AAB6C2; --ink-3:#7C8894;
+    --line:#2A3441; --line-2:#3A4653;
+    --brand:#4FB3A1; --brand-ink:#6FC9B8;
+    --ok:#6DD09A; --ok-bg:#12281E;
+    --warn:#E0AC5B; --warn-bg:#2B2113;
+    --bad:#E8879F; --bad-bg:#2B1219;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground); color:var(--ink);
+    font-family:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+    font-size:17px; line-height:1.55; margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:660px; margin:0 auto; padding:40px 22px 72px; display:flex; flex-direction:column; gap:26px}
+
+  header{display:flex; flex-direction:column; gap:9px}
+  .eyebrow{
+    font-family:"Archivo",sans-serif; font-weight:600; font-size:12px;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--brand);
+  }
+  h1{
+    font-family:"Archivo",sans-serif; font-weight:700; font-size:clamp(28px,5.2vw,38px);
+    line-height:1.12; letter-spacing:-.02em; margin:0; text-wrap:balance;
+  }
+  .lede{color:var(--ink-2); margin:0; max-width:56ch}
+
+  form{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:22px; display:flex; flex-direction:column; gap:17px; box-shadow:var(--shadow);
+  }
+  .field{display:flex; flex-direction:column; gap:6px}
+  label{font-family:"Archivo",sans-serif; font-weight:600; font-size:14px}
+  .hint{font-size:13.5px; color:var(--ink-3); margin:0}
+  input{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:14px;
+    padding:11px 13px; border:1px solid var(--line-2); border-radius:8px;
+    background:var(--ground); color:var(--ink); width:100%;
+  }
+  input:focus-visible{outline:2px solid var(--brand); outline-offset:1px; border-color:var(--brand)}
+  button{
+    font-family:"Archivo",sans-serif; font-weight:600; font-size:16px;
+    background:var(--brand); color:#fff; border:0; border-radius:8px;
+    padding:13px 18px; cursor:pointer; transition:filter .15s;
+  }
+  button:hover:not(:disabled){filter:brightness(1.09)}
+  button:disabled{opacity:.55; cursor:progress}
+  button:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+
+  .steps{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden}
+  .steps li{display:flex; align-items:center; gap:11px; padding:11px 14px; background:var(--surface);
+    font-size:15px; color:var(--ink-3)}
+  .steps li.on{color:var(--ink)}
+  .dot{width:20px; height:20px; border-radius:50%; flex:none; display:grid; place-items:center;
+    border:1.5px solid var(--line-2); font-size:12px; font-weight:700; color:#fff}
+  .dot.ok{background:var(--ok); border-color:var(--ok)}
+  .dot.no{background:var(--bad); border-color:var(--bad)}
+  .dot.run{border-color:var(--brand); border-right-color:transparent; animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){ .dot.run{animation:none} }
+
+  .verdict{border-radius:12px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow)}
+  .verdict-top{padding:20px 22px; display:flex; flex-direction:column; gap:4px}
+  .verdict-top .k{font-family:"Archivo",sans-serif; font-size:12px; font-weight:600;
+    letter-spacing:.13em; text-transform:uppercase; opacity:.8}
+  .verdict-top .t{font-family:"Archivo",sans-serif; font-size:24px; font-weight:700; line-height:1.15}
+  .v-ok .verdict-top{background:var(--ok-bg); color:var(--ok)}
+  .v-warn .verdict-top{background:var(--warn-bg); color:var(--warn)}
+  .v-bad .verdict-top{background:var(--bad-bg); color:var(--bad)}
+  .verdict-body{background:var(--surface); padding:20px 22px; display:flex; flex-direction:column; gap:14px}
+  .verdict-body p{margin:0}
+  .verdict-body ol{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:8px}
+  .verdict-body strong{font-weight:600}
+
+  pre{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:13px; line-height:1.5;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:8px;
+    padding:13px; margin:0; overflow-x:auto; white-space:pre; color:var(--ink);
+  }
+  code{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.92em;
+    background:var(--surface-2); padding:1px 5px; border-radius:4px}
+  .ghost{
+    background:transparent; color:var(--ink-2); border:1px solid var(--line-2);
+    font-size:14px; padding:9px 14px; align-self:flex-start;
+  }
+  .ghost:hover{filter:none; background:var(--surface-2)}
+  footer{color:var(--ink-3); font-size:14px; border-top:1px solid var(--line); padding-top:18px}
+  footer p{margin:0 0 7px}
+  .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Claude for Business · Sesión 7</div>
+    <h1>¿Ya quedó tu base?</h1>
+    <p class="lede">Pega las dos cadenas que anotaste en el paso 4.4 de la guía. Esta página
+      revisa tu base de datos y te dice si está lista o exactamente qué le falta.</p>
+  </header>
+
+  <form id="f">
+    <div class="field">
+      <label for="url">Project URL</label>
+      <p class="hint">Termina en <code>.supabase.co</code></p>
+      <input id="url" type="url" placeholder="https://abcdefgh.supabase.co" autocomplete="off" spellcheck="false" required>
+    </div>
+    <div class="field">
+      <label for="key">Publishable key</label>
+      <p class="hint">Empieza con <code>sb_publishable_</code>. Si la tuya empieza con <code>eyJ</code> también sirve.</p>
+      <input id="key" type="text" placeholder="sb_publishable_..." autocomplete="off" spellcheck="false" required>
+    </div>
+    <button id="go" type="submit">Comprobar</button>
+  </form>
+
+  <ul class="steps" id="steps" hidden>
+    <li id="s1"><span class="dot" id="d1"></span><span>Tu base responde y la tabla existe</span></li>
+    <li id="s2"><span class="dot" id="d2"></span><span>Acepta que le agreguen un renglón</span></li>
+    <li id="s3"><span class="dot" id="d3"></span><span>Deja leer lo que se guardó</span></li>
+  </ul>
+
+  <div id="out" aria-live="polite"></div>
+
+  <footer>
+    <p><strong>Nada de lo que pegas aquí se guarda.</strong> La comprobación corre en tu propio
+      navegador y habla directo con tu base.</p>
+    <p>Si sale algo que no entiendes, mándame una captura de esta pantalla y te contesto.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var f=document.getElementById('f'), go=document.getElementById('go'),
+      out=document.getElementById('out'), steps=document.getElementById('steps');
+  var D=[null,document.getElementById('d1'),document.getElementById('d2'),document.getElementById('d3')];
+  var S=[null,document.getElementById('s1'),document.getElementById('s2'),document.getElementById('s3')];
+  var lastReport='';
+
+  function reset(){
+    steps.hidden=false; out.innerHTML='';
+    for(var i=1;i<=3;i++){ D[i].className='dot'; D[i].textContent=''; S[i].className=''; }
+  }
+  function mark(i,state){
+    D[i].className='dot '+state;
+    D[i].textContent = state==='ok' ? '✓' : state==='no' ? '✕' : '';
+    if(state!=='run') S[i].className='on';
+  }
+  function esc(s){ return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); }
+
+  function verdict(kind,label,title,bodyHTML,report){
+    lastReport=report;
+    out.innerHTML =
+      '<div class="verdict v-'+kind+'">'+
+        '<div class="verdict-top"><div class="k">'+label+'</div><div class="t">'+title+'</div></div>'+
+        '<div class="verdict-body">'+bodyHTML+
+          '<button class="ghost" type="button" id="cp">Copiar diagnóstico</button>'+
+        '</div></div>';
+    var cp=document.getElementById('cp');
+    cp.addEventListener('click',function(){
+      navigator.clipboard.writeText(lastReport).then(function(){
+        cp.textContent='Copiado';
+        setTimeout(function(){cp.textContent='Copiar diagnóstico';},1800);
+      },function(){ cp.textContent='No se pudo copiar'; });
+    });
+  }
+
+  var SQL='alter table registros enable row level security;\n\n'+
+    'create policy "lectura publica"\n  on registros for select to anon using (true);\n\n'+
+    'create policy "escritura publica"\n  on registros for insert to anon with check (true);';
+
+  function faltanPoliticas(titulo, explicacion, report){
+    verdict('warn','Casi',titulo,
+      '<p>'+explicacion+'</p>'+
+      '<p>Le falta el paso 4.3 de la guía. Se arregla pegando cuatro renglones:</p>'+
+      '<ol><li>En Supabase, entra a <strong>SQL Editor</strong> y da clic en <strong>New query</strong>.</li>'+
+      '<li>Pega esto y da clic en <strong>Run</strong>:</li></ol>'+
+      '<pre>'+esc(SQL)+'</pre>'+
+      '<p>Si te dice que una política ya existe, está bien: ésa ya estaba puesta. '+
+      'Regresa aquí y comprueba otra vez.</p>',
+      report);
+  }
+
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var url=document.getElementById('url').value.trim().replace(/\/+$/,'');
+    var key=document.getElementById('key').value.trim();
+    if(!/^https:\/\/[^\/]+\.supabase\.(co|in)$/i.test(url)){
+      reset(); steps.hidden=true;
+      verdict('bad','Revisa esto','Esa no parece la Project URL',
+        '<p>Tiene que verse así: <code>https://abcdefgh.supabase.co</code>, sin nada después.</p>'+
+        '<p>Está en la configuración de tu proyecto, en la sección <strong>Data API</strong>. '+
+        'No es la dirección de la página de Supabase donde estás navegando.</p>',
+        'URL con formato inválido: '+url);
+      return;
+    }
+    go.disabled=true; go.textContent='Comprobando…'; reset();
+    run(url,key).catch(function(err){
+      verdict('bad','No se pudo','No logramos hablar con tu base',
+        '<p>Puede ser que la URL tenga un error de dedo, que tu proyecto siga creándose, o que estés sin internet.</p>'+
+        '<p>Los proyectos gratuitos también <strong>se pausan tras una semana sin uso</strong>. Si es el caso, '+
+        'entra a supabase.com y dale <strong>Resume project</strong>.</p>'+
+        '<pre>'+esc(String(err&&err.message||err))+'</pre>',
+        'Error de red: '+String(err&&err.message||err));
+    }).then(function(){ go.disabled=false; go.textContent='Comprobar otra vez'; });
+  });
+
+  function headers(key){
+    return {'apikey':key,'Authorization':'Bearer '+key,'Content-Type':'application/json'};
+  }
+
+  async function run(url,key){
+    /* El orden importa y no es el obvio.
+       Leer una tabla sin política NO da error: devuelve 200 con una lista vacía.
+       Por eso primero escribimos un renglón y luego intentamos leer ESE renglón:
+       si no regresa, sabemos que lo que falta es el permiso de lectura y no que
+       la tabla esté vacía. */
+    mark(1,'run');
+
+    // ── 1 · ¿responde, la llave sirve, la tabla existe?
+    var r = await fetch(url+'/rest/v1/registros?select=id&limit=1',{headers:headers(key)});
+    var t = await r.text(), b={};
+    try{ b = t ? JSON.parse(t) : {}; }catch(e){ b={raw:t}; }
+    var msg = (b && (b.message||b.hint||b.error_description||b.error)) || '';
+    var code = (b && b.code) || '';
+    var rep = 'GET  registros → '+r.status+' '+(code?('['+code+'] '):'')+msg;
+
+    if(/invalid api key|no api key/i.test(msg)){
+      mark(1,'no');
+      verdict('bad','Revisa esto','Esa llave no es la de este proyecto',
+        '<p>Tu base sí responde, pero no reconoce la llave. Casi siempre es una de dos cosas:</p>'+
+        '<ol><li>La llave es de <strong>otro proyecto</strong> de Supabase.</li>'+
+        '<li>Se copió incompleta. Cópiala otra vez con el botón de copiar, no seleccionando con el mouse.</li></ol>'+
+        '<p>La correcta empieza con <code>sb_publishable_</code> y está en la configuración del '+
+        'proyecto, en <strong>API keys</strong>.</p>', rep);
+      return;
+    }
+    if(r.status===404 || code==='PGRST205' || /could not find the table/i.test(msg)){
+      mark(1,'no');
+      verdict('bad','Falta la tabla','No encontramos la tabla registros',
+        '<p>O todavía no la creaste, o se llamó distinto. Tiene que llamarse exactamente '+
+        '<code>registros</code>: en minúsculas, sin acentos y sin espacios.</p>'+
+        '<ol><li>En Supabase entra a <strong>Table Editor</strong>.</li>'+
+        '<li>Si la ves con otro nombre, cámbiaselo. Si no está, créala con <strong>New table</strong>.</li>'+
+        '<li>Déjale <code>id</code> y <code>created_at</code>, y agrégale <code>nombre</code> y '+
+        '<code>mensaje</code>, las dos de tipo <strong>text</strong>.</li></ol>', rep);
+      return;
+    }
+    if(/permission denied/i.test(msg)){
+      mark(1,'no');
+      verdict('warn','Casi','Tu tabla no está publicada',
+        '<p>La tabla existe, pero no está expuesta hacia afuera. Es una casilla que cambió de '+
+        'valor por omisión este año, así que le pasa a mucha gente.</p>'+
+        '<ol><li>En Supabase, entra a la configuración del proyecto y busca <strong>Data API</strong>.</li>'+
+        '<li>En <strong>Exposed schemas</strong>, asegúrate de que esté <code>public</code>.</li>'+
+        '<li>En <strong>Exposed tables</strong>, prende <code>registros</code>.</li>'+
+        '<li>Prende también <strong>Default privileges for new entities</strong>, para que no te '+
+        'vuelva a pasar.</li></ol>'+
+        '<p>Guarda, espera unos segundos y comprueba otra vez.</p>', rep);
+      return;
+    }
+    if(!r.ok){
+      mark(1,'no');
+      verdict('bad','No esperábamos esto','Tu base contestó algo que no reconocemos',
+        '<p>Copia el diagnóstico de abajo y mándamelo; con eso te digo qué es.</p>'+
+        '<pre>'+esc(rep)+'</pre>', rep);
+      return;
+    }
+    mark(1,'ok');
+
+    // ── 2 · ¿deja escribir?
+    mark(2,'run');
+    /* Sin 'return=representation' a propósito: pedir que devuelva el renglón
+       recién escrito exige TAMBIÉN el permiso de lectura, y entonces los dos
+       fallos se verían iguales. Así el POST prueba solo la escritura. */
+    var r2 = await fetch(url+'/rest/v1/registros',{
+      method:'POST',
+      headers:headers(key),
+      body:JSON.stringify({nombre:'comprobación',mensaje:'Si ves este renglón, tu base quedó lista.'})
+    });
+    var t2 = await r2.text(), b2={};
+    try{ b2 = t2 ? JSON.parse(t2) : {}; }catch(e){ b2={raw:t2}; }
+    var m2 = (b2 && (b2.message||b2.hint)) || '';
+    var c2 = (b2 && b2.code) || '';
+    rep += '\nPOST registros → '+r2.status+' '+(c2?('['+c2+'] '):'')+m2;
+
+    if(!r2.ok){
+      mark(2,'no');
+      if(/row-level security|violates row-level/i.test(m2)){
+        faltanPoliticas('Tu tabla no acepta que le agreguen renglones',
+          'Existe y responde, pero está cerrada: nadie puede escribirle, ni tu propia página.',
+          rep);
+      }else if(c2==='PGRST204' || /could not find the .* column/i.test(m2)){
+        verdict('warn','Casi','A la tabla le faltan columnas',
+          '<p>La tabla existe pero no tiene <code>nombre</code> y <code>mensaje</code>.</p>'+
+          '<ol><li>Entra a <strong>Table Editor</strong> y abre <code>registros</code>.</li>'+
+          '<li>Con <strong>Add column</strong> agrega <code>nombre</code> y <code>mensaje</code>, '+
+          'las dos de tipo <strong>text</strong>.</li></ol>'+
+          '<pre>'+esc(m2)+'</pre>', rep);
+      }else{
+        verdict('bad','No esperábamos esto','No se pudo agregar el renglón de prueba',
+          '<p>Copia el diagnóstico y mándamelo.</p><pre>'+esc(rep)+'</pre>', rep);
+      }
+      return;
+    }
+    mark(2,'ok');
+
+    // ── 3 · ¿deja leer lo que acabamos de escribir?
+    mark(3,'run');
+    var filtro = '?select=*&nombre=eq.'+encodeURIComponent('comprobación')+'&limit=1';
+    var r3 = await fetch(url+'/rest/v1/registros'+filtro,{headers:headers(key)});
+    var t3 = await r3.text(), b3=[];
+    try{ b3 = t3 ? JSON.parse(t3) : []; }catch(e){ b3=[]; }
+    var m3 = (b3 && !Array.isArray(b3) && (b3.message||b3.hint)) || '';
+    rep += '\nGET  el renglón → '+r3.status+' '+(Array.isArray(b3)?('devolvió '+b3.length):m3);
+
+    if(!r3.ok || !Array.isArray(b3)){
+      mark(3,'no');
+      verdict('bad','No esperábamos esto','Se guardó, pero no pudimos leerlo de vuelta',
+        '<p>Copia el diagnóstico y mándamelo.</p><pre>'+esc(rep)+'</pre>', rep);
+      return;
+    }
+    if(b3.length===0){
+      mark(3,'no');
+      faltanPoliticas('Tu tabla guarda, pero no deja leer',
+        'Acabamos de guardarle un renglón y al pedírselo de vuelta contestó que no hay nada. '+
+        'Eso no es que esté vacía: es que le falta el permiso de lectura. Es el error más '+
+        'confuso de todos, porque no da ningún mensaje: tu página simplemente se vería vacía.',
+        rep);
+      return;
+    }
+    mark(3,'ok');
+    verdict('ok','Listo','Tu base quedó lista',
+      '<p>Responde, acepta que le agreguen renglones y deja leerlos de vuelta. '+
+      '<strong>Eso es todo lo que necesitabas para el martes.</strong></p>'+
+      '<p>Le dejamos un renglón de prueba que dice <em>comprobación</em>. '+
+      '<strong>No lo borres:</strong> el martes lo vas a ver aparecer en tu página, y es tu '+
+      'primer dato real.</p>'+
+      '<p>Guarda tus dos cadenas donde puedas copiarlas el día de la sesión, y ya. '+
+      'Nos vemos el martes.</p>', rep);
+  }
+})();
+</script>

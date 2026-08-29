@@ -1,3 +1,9 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <title>¿Ya quedó tu base?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,6 +43,8 @@
   }
 
   *{box-sizing:border-box}
+  [hidden]{display:none !important}
+  img{max-width:100%}
   body{
     background:var(--ground); color:var(--ink);
     font-family:"Source Sans 3","Segoe UI",system-ui,sans-serif;
@@ -120,6 +128,8 @@
   footer p{margin:0 0 7px}
   .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
 </style>
+</head>
+<body>
 
 <div class="wrap">
   <header>
@@ -370,3 +380,6 @@
   }
 })();
 </script>
+
+</body>
+</html>

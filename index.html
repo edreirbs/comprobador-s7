@@ -205,18 +205,21 @@
   }
 
   var SQL='alter table registros enable row level security;\n\n'+
+    'drop policy if exists "lectura publica" on registros;\n'+
     'create policy "lectura publica"\n  on registros for select to anon using (true);\n\n'+
+    'drop policy if exists "escritura publica" on registros;\n'+
     'create policy "escritura publica"\n  on registros for insert to anon with check (true);';
 
   function faltanPoliticas(titulo, explicacion, report){
     verdict('warn','Casi',titulo,
       '<p>'+explicacion+'</p>'+
-      '<p>Le falta el paso 4.3 de la guía. Se arregla pegando cuatro renglones:</p>'+
+      '<p>Le falta el paso 4.3 de la guía. Se arregla pegando este bloque:</p>'+
       '<ol><li>En Supabase, entra a <strong>SQL Editor</strong> y da clic en <strong>New query</strong>.</li>'+
       '<li>Pega esto y da clic en <strong>Run</strong>:</li></ol>'+
       '<pre>'+esc(SQL)+'</pre>'+
-      '<p>Si te dice que una política ya existe, está bien: ésa ya estaba puesta. '+
-      'Regresa aquí y comprueba otra vez.</p>',
+      '<p>Se puede pegar completo las veces que haga falta: los dos renglones que empiezan '+
+      'con <code>drop policy if exists</code> están ahí justamente para que no truene si una de '+
+      'las dos políticas ya estaba puesta. Cuando termine, regresa aquí y comprueba otra vez.</p>',
       report);
   }
 

@@ -336,8 +336,10 @@
         verdict('warn','Casi','A la tabla le faltan columnas',
           '<p>La tabla existe pero no tiene <code>nombre</code> y <code>mensaje</code>.</p>'+
           '<ol><li>Entra a <strong>Table Editor</strong> y abre <code>registros</code>.</li>'+
-          '<li>Con <strong>Add column</strong> agrega <code>nombre</code> y <code>mensaje</code>, '+
-          'las dos de tipo <strong>text</strong>.</li></ol>'+
+          '<li>Aqu\u00ed no hay bot\u00f3n que diga <em>Add column</em>: dale al <strong>+</strong> gris '+
+          'que est\u00e1 al final de la fila de encabezados, a la derecha de la \u00faltima columna.</li>'+
+          '<li>Agrega <code>nombre</code> y <code>mensaje</code>. En <em>Type</em> escribe '+
+          '<code>text</code> en el buscador y el\u00edgelo. \u2192 <strong>Save</strong>.</li></ol>'+
           '<pre>'+esc(m2)+'</pre>', rep);
       }else{
         verdict('bad','No esperábamos esto','No se pudo agregar el renglón de prueba',
